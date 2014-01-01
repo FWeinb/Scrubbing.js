@@ -29,17 +29,15 @@ var MouseDriver = (function (){
             currentElement = scrubElement;
 
             var startValue          = currentElement.options.adapter.start ( currentElement ),
-                changeCall          = function ( value ) { return currentElement.options.adapter.change ( currentElement, value ); },
-
                 coordinateResolver  = function ( e ) { return currentElement.options.resolver.coordinate( e ); },
-                valueResolver       = function ( start, current ) { return currentElement.options.resolver.value( start, current ); },
-
                 startCoordinate     = coordinateResolver( e );
 
 
             globalMouseMoveListener = function  ( e ) {
               if ( e.which === 1 ) {
-                changeCall( startValue + valueResolver ( startCoordinate, coordinateResolver ( e ) ) );
+                var delta = currentElement.options.resolver.value ( startCoordinate, coordinateResolver ( e ) );
+
+                currentElement.options.adapter.change ( currentElement, startValue +  delta, delta );
               } else { 
                 globalMouseUpListener ();
               }
