@@ -1,6 +1,7 @@
 # Scrubbing.js
 
 Highly customizable mouse scrubbing implementation for numbers and custom data.
+Inspired by [Scrubbing Calculator by Bret Victors](http://worrydream.com/ScrubbingCalculator/)
 
 ## Getting Started
 
