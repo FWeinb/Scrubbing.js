@@ -42,7 +42,7 @@
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
               <p>Adapter are used to bridge between the scrubbing Element and the DOM</p>
-<p>The BasicNode Adapter comes bundled and allows the Scrubber to work
+<p>The BasicNode Adapter comes bundled and allows the scrubbing to work
 on DOM elements, reading the starting value from DOM and writing it back on change.</p>
 
             </div>
@@ -91,14 +91,14 @@ on DOM elements, reading the starting value from DOM and writing it back on chan
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p>Called if the <code>value</code> for the <code>scrubberElement</code> has changed.
+              <p>Called if the <code>value</code> for the <code>scrubbingElement</code> has changed.
 Where <code>value</code> is the value calculated from <code>start</code> and
 the Resolver which is used.</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>  change : <span class="function"><span class="keyword">function</span> <span class="params">( scrubbingElement, value )</span> {</span>
-    scrubberElement.node.textContent = value;
+    scrubbingElement.node.textContent = value;
   },</pre></div></div>
             
         </li>
@@ -126,9 +126,9 @@ the Resolver which is used.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
-              <p>Resolver are used to calculate the coordinates and scrubber value</p>
+              <p>Resolver are used to calculate the coordinates and scrubbing value</p>
 <p>The BasicResolver is used to construct the <code>HorizontalResolver</code> and the <code>VerticalResolver</code>
-Which are bundled with Scrubber.js</p>
+Which are bundled with Scrubbing.js</p>
 
             </div>
             
@@ -237,7 +237,7 @@ DOM and reflect new values back in the DOM. A <code>resolver</code> is used to c
   <span class="keyword">var</span> globalMouseMoveListener, <span class="comment">// Holds the current MouseMoveListener</span>
       currentElement,          <span class="comment">// Holds the current Element</span>
 
-      scrubberElements = [],   <span class="comment">// Holds all scrubable Elements</span>
+      scrubbingElements = [],   <span class="comment">// Holds all scrubable Elements</span>
 
 
       globalMouseUpListener = <span class="function"><span class="keyword">function</span> <span class="params">(  )</span> {</span>
@@ -250,7 +250,7 @@ DOM and reflect new values back in the DOM. A <code>resolver</code> is used to c
 
       globalMouseDownListener = <span class="function"><span class="keyword">function</span> <span class="params">( e )</span> {</span>
 
-        scrubberElements.forEach ( <span class="function"><span class="keyword">function</span> <span class="params">( scrubElement )</span> {</span>
+        scrubbingElements.forEach ( <span class="function"><span class="keyword">function</span> <span class="params">( scrubElement )</span> {</span>
           <span class="keyword">if</span> ( scrubElement.node === e.target ) {
             e.preventDefault();
 
@@ -287,7 +287,7 @@ DOM and reflect new values back in the DOM. A <code>resolver</code> is used to c
   <span class="keyword">return</span> {
 
       init : <span class="function"><span class="keyword">function</span> <span class="params">( scrubbingElement )</span> {</span>
-        scrubbingElement.push ( scrubbingElement );
+        scrubbingElements.push ( scrubbingElement );
         init_once ();
       },
 

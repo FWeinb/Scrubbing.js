@@ -3,7 +3,7 @@
 // Adapter are used to bridge between the scrubbing Element and the DOM
 
 
-// The BasicNode Adapter comes bundled and allows the Scrubber to work
+// The BasicNode Adapter comes bundled and allows the scrubbing to work
 // on DOM elements, reading the starting value from DOM and writing it back on change.
 var BasicNodeAdapter = {
 
@@ -20,21 +20,21 @@ var BasicNodeAdapter = {
   },
 
 
-  // Called if the `value` for the `scrubberElement` has changed.
+  // Called if the `value` for the `scrubbingElement` has changed.
   // Where `value` is the value calculated from `start` and
   // the Resolver which is used.
   change : function ( scrubbingElement, value ) {
-    scrubberElement.node.textContent = value;
+    scrubbingElement.node.textContent = value;
   },
 
   //  Called when the scrubbing ends.
   end : function ( scrubbingElement ) { }
 };
 
-// Resolver are used to calculate the coordinates and scrubber value
+// Resolver are used to calculate the coordinates and scrubbing value
 
 // The BasicResolver is used to construct the `HorizontalResolver` and the `VerticalResolver`
-// Which are bundled with Scrubber.js
+// Which are bundled with Scrubbing.js
 var BasicResolver = function ( name, prop, factor, divider ){
   this.name    = name;
   this.prop    = prop;
@@ -88,7 +88,7 @@ var MouseDriver = (function (){
   var globalMouseMoveListener, // Holds the current MouseMoveListener
       currentElement,          // Holds the current Element
 
-      scrubberElements = [],   // Holds all scrubable Elements
+      scrubbingElements = [],   // Holds all scrubable Elements
 
 
       globalMouseUpListener = function (  ) {
@@ -101,7 +101,7 @@ var MouseDriver = (function (){
 
       globalMouseDownListener = function ( e ) {
 
-        scrubberElements.forEach ( function ( scrubElement ) {
+        scrubbingElements.forEach ( function ( scrubElement ) {
           if ( scrubElement.node === e.target ) {
             e.preventDefault();
 
@@ -138,7 +138,7 @@ var MouseDriver = (function (){
   return {
 
       init : function ( scrubbingElement ) {
-        scrubbingElement.push ( scrubbingElement );
+        scrubbingElements.push ( scrubbingElement );
         init_once ();
       },
 

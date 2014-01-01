@@ -9,7 +9,7 @@ var MouseDriver = (function (){
   var globalMouseMoveListener, // Holds the current MouseMoveListener
       currentElement,          // Holds the current Element
 
-      scrubberElements = [],   // Holds all scrubable Elements
+      scrubbingElements = [],   // Holds all scrubable Elements
 
 
       globalMouseUpListener = function (  ) {
@@ -22,7 +22,7 @@ var MouseDriver = (function (){
 
       globalMouseDownListener = function ( e ) {
 
-        scrubberElements.forEach ( function ( scrubElement ) {
+        scrubbingElements.forEach ( function ( scrubElement ) {
           if ( scrubElement.node === e.target ) {
             e.preventDefault();
 
@@ -59,7 +59,7 @@ var MouseDriver = (function (){
   return {
 
       init : function ( scrubbingElement ) {
-        scrubbingElement.push ( scrubbingElement );
+        scrubbingElements.push ( scrubbingElement );
         init_once ();
       },
 

@@ -1,7 +1,7 @@
-// Resolver are used to calculate the coordinates and scrubber value
+// Resolver are used to calculate the coordinates and scrubbing value
 
 // The BasicResolver is used to construct the `HorizontalResolver` and the `VerticalResolver`
-// Which are bundled with Scrubber.js
+// Which are bundled with Scrubbing.js
 var BasicResolver = function ( name, prop, factor, divider ){
   this.name    = name;
   this.prop    = prop;
