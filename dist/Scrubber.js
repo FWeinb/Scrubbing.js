@@ -35,9 +35,10 @@ var BasicNodeAdapter = {
 
 // The BasicResolver is used to construct the `HorizontalResolver` and the `VerticalResolver`
 // Which are bundled with Scrubber.js
-var BasicResolver = function ( name, prop, divider ){
+var BasicResolver = function ( name, prop, factor, divider ){
   this.name    = name;
   this.prop    = prop;
+  this.factor  = factor  || 1;
   this.divider = divider || 1;
 };
 
@@ -57,7 +58,7 @@ BasicResolver.prototype = {
    //
    //  return Value used to calculate the new numeric value
   value : function ( startCoordinate, currentCoordinate ){
-    return Math.floor ( ( currentCoordinate - startCoordinate ) / this.divider );
+    return this.factor * Math.floor ( ( currentCoordinate - startCoordinate ) / this.divider );
   }
 };
 
@@ -65,16 +66,16 @@ BasicResolver.prototype = {
 // It is used to create the bundled `HorizontalResolver` and `VerticalResolver`
 //
 // Return function which takes a `divider` to determin the "friction" of the Scrubber
-var CreateBasicResolverProvider = function ( name, prop ) {
+var CreateBasicResolverProvider = function ( name, prop, factor ) {
   return function ( divider ) {
-    return new BasicResolver ( name, prop, divider );
+    return new BasicResolver ( name, prop, factor, divider );
   };
 };
 
 
 // Create Horizontal/Vertical Resolver
 var HorizontalResolverProvider = CreateBasicResolverProvider ( 'Horizontal', 'clientX' ),
-    VerticalResolverProvider   = CreateBasicResolverProvider ( 'Vertical'  , 'clientY' );
+    VerticalResolverProvider   = CreateBasicResolverProvider ( 'Vertical'  , 'clientY', -1 );
 
 
 // A driver defines the input method used to scrub values.
@@ -107,17 +108,15 @@ var MouseDriver = (function (){
             currentElement = scrubElement;
 
             var startValue          = currentElement.options.adapter.start ( currentElement ),
-                changeCall          = function ( value ) { return currentElement.options.adapter.change ( currentElement, value ); },
-
                 coordinateResolver  = function ( e ) { return currentElement.options.resolver.coordinate( e ); },
-                valueResolver       = function ( start, current ) { return currentElement.options.resolver.value( start, current ); },
-
                 startCoordinate     = coordinateResolver( e );
 
 
             globalMouseMoveListener = function  ( e ) {
               if ( e.which === 1 ) {
-                changeCall( startValue + valueResolver ( startCoordinate, coordinateResolver ( e ) ) );
+                var delta = currentElement.options.resolver.value ( startCoordinate, coordinateResolver ( e ) );
+
+                currentElement.options.adapter.change ( currentElement, startValue +  delta, delta );
               } else { 
                 globalMouseUpListener ();
               }
@@ -155,6 +154,24 @@ var MouseDriver = (function (){
   };
 })();
 
+var MouseWheelDriver = (function(window, undefined){
+
+  return {
+    init : function ( scrubberElement ) {
+
+      scrubberElement.node.addEventListener("mousewheel", function ( e ) {
+        e.preventDefault();
+        var startValue          = scrubberElement.options.adapter.start ( scrubberElement );
+        scrubberElement.options.adapter.change ( scrubberElement, startValue - e.wheelDelta );
+      }, false);
+
+    },
+
+    remove : function ( scrubberElement ) { }
+  };
+
+})(window);
+
 var resolveStrToObj = function ( objOrStr, searchObj ) {
   if ( ! objOrStr ) return;
 
@@ -175,11 +192,22 @@ fillOption = function ( newOptions, userOption, defaultOptions, searchObj, optio
     // Search for the `optionName` and resolve it.
     newOptions[optionName] = resolveStrToObj ( userOption[optionName], searchObj ) || defaultOptions[optionName];
   }
+},
+
+callObjOrArray = function ( objOrArr, methodName, param ){
+  if ( Array.isArray ( objOrArr ) ) {
+    objOrArr.forEach(function ( obj ){
+      obj[methodName] ( param );
+    });
+  } else { 
+    objOrArr[methodName] ( param );
+  }
+
 };
 
 // Defining some defaults
 var defaultOptions = {
-  driver      : MouseDriver,
+  driver      : [ MouseWheelDriver, MouseDriver ],
   resolver    : HorizontalResolverProvider ( ),
   adapter     : BasicNodeAdapter
 };
@@ -212,27 +240,29 @@ var Scrubber = function ( node, userOptions ) {
   this.node.dataset.scrubOrientation = this.options.resolver.name;
 
   // Initialise Adapter
-  this.options.adapter.init ( this );
-
+  callObjOrArray ( this.options.adapter, "init", this);
   // Initialise Driver
-  this.options.driver.init ( this );
+  callObjOrArray ( this.options.driver, "init", this);
 };
 
 Scrubber.prototype = {
 
     remove   : function (){
-      this.options.driver.remove ( this );
+      callObjOrArray ( this.options.driver, "remove", this);
     }
 };
 
 
-  Scrubber.driver   = { Mouse     : MouseDriver };
+  Scrubber.driver   = {
+                        Mouse     : MouseDriver,
+                        MouseWheel: MouseWheelDriver
+                       };
 
   Scrubber.adapter  = { BasicNode : BasicNodeAdapter };
 
   Scrubber.resolver = {
                         DefaultHorizontal  : HorizontalResolverProvider (),
-                        DefaultVertical    : HorizontalResolverProvider (),
+                        DefaultVertical    : VerticalResolverProvider   (),
 
                         HorizontalProvider : HorizontalResolverProvider,
                         VerticalProvider   : VerticalResolverProvider
