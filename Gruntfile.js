@@ -12,6 +12,7 @@ module.exports = function(grunt) {
                 'src/Resolver/BasicResolver.js',
                 'src/Resolver/DefaultResolver.js',
                 'src/Driver/MouseDriver.js',
+                'src/Driver/MouseWheelDriver.js',
 
                 'src/Helper.js',
 
