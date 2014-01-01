@@ -1,6 +1,6 @@
 // Defining some defaults
 var defaultOptions = {
-  driver      : MouseDriver,
+  driver      : [ MouseWheelDriver, MouseDriver ],
   resolver    : HorizontalResolverProvider ( ),
   adapter     : BasicNodeAdapter
 };
