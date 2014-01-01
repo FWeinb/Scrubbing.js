@@ -207,7 +207,7 @@ callObjOrArray = function ( objOrArr, methodName, param ){
 
 // Defining some defaults
 var defaultOptions = {
-  driver      : [ MouseWheelDriver, MouseDriver ],
+  driver      : MouseDriver,
   resolver    : HorizontalResolverProvider ( ),
   adapter     : BasicNodeAdapter
 };
