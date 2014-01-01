@@ -25,15 +25,14 @@ var Scrubber = function ( node, userOptions ) {
   this.node.dataset.scrubOrientation = this.options.resolver.name;
 
   // Initialise Adapter
-  this.options.adapter.init ( this );
-
+  callObjOrArray ( this.options.adapter, "init", this);
   // Initialise Driver
-  this.options.driver.init ( this );
+  callObjOrArray ( this.options.driver, "init", this);
 };
 
 Scrubber.prototype = {
 
     remove   : function (){
-      this.options.driver.remove ( this );
+      callObjOrArray ( this.options.driver, "remove", this);
     }
 };

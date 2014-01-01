@@ -18,4 +18,15 @@ fillOption = function ( newOptions, userOption, defaultOptions, searchObj, optio
     // Search for the `optionName` and resolve it.
     newOptions[optionName] = resolveStrToObj ( userOption[optionName], searchObj ) || defaultOptions[optionName];
   }
+},
+
+callObjOrArray = function ( objOrArr, methodName, param ){
+  if ( Array.isArray ( objOrArr ) ) {
+    objOrArr.forEach(function ( obj ){
+      obj[methodName] ( param );
+    });
+  } else { 
+    objOrArr[methodName] ( param );
+  }
+
 };
