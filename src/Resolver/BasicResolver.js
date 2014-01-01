@@ -2,9 +2,10 @@
 
 // The BasicResolver is used to construct the `HorizontalResolver` and the `VerticalResolver`
 // Which are bundled with Scrubber.js
-var BasicResolver = function ( name, prop, divider ){
+var BasicResolver = function ( name, prop, factor, divider ){
   this.name    = name;
   this.prop    = prop;
+  this.factor  = factor  || 1;
   this.divider = divider || 1;
 };
 
@@ -24,6 +25,6 @@ BasicResolver.prototype = {
    //
    //  return Value used to calculate the new numeric value
   value : function ( startCoordinate, currentCoordinate ){
-    return Math.floor ( ( currentCoordinate - startCoordinate ) / this.divider );
+    return this.factor * Math.floor ( ( currentCoordinate - startCoordinate ) / this.divider );
   }
 };
