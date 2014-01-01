@@ -1,5 +1,8 @@
 
-  Scrubber.driver   = { Mouse     : MouseDriver };
+  Scrubber.driver   = {
+                        Mouse     : MouseDriver,
+                        MouseWheel: MouseWheelDriver
+                       };
 
   Scrubber.adapter  = { BasicNode : BasicNodeAdapter };
 
