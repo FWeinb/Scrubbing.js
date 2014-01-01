@@ -58,16 +58,16 @@ var MouseDriver = (function (){
 
   return {
 
-      init : function ( scrubberElement ) {
-        scrubberElements.push ( scrubberElement );
+      init : function ( scrubbingElement ) {
+        scrubbingElement.push ( scrubbingElement );
         init_once ();
       },
 
-      remove : function ( scrubberElement ){
-        for (var i = scrubberElements.length - 1; i >= 0; i--) {
-          var elem = scrubberElement[i];
-          if ( elem === scrubberElement ) {
-            scrubberElements.splice(i,1);
+      remove : function ( scrubbingElement ){
+        for (var i = scrubbingElement.length - 1; i >= 0; i--) {
+          var elem = scrubbingElement[i];
+          if ( elem === scrubbingElement ) {
+            scrubbingElement.splice(i,1);
             break;
           }
         }

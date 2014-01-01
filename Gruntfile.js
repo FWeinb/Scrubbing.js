@@ -17,7 +17,7 @@ module.exports = function(grunt) {
                 'src/Helper.js',
 
                 'src/Defaults.js',
-                'src/Scrubber.js',
+                'src/Scrubbing.js',
 
                 'src/outro.js'
              ],

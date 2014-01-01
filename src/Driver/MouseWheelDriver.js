@@ -1,17 +1,17 @@
 var MouseWheelDriver = (function(window, undefined){
 
   return {
-    init : function ( scrubberElement ) {
+    init : function ( scrubbingElement ) {
 
-      scrubberElement.node.addEventListener("mousewheel", function ( e ) {
+      scrubbingElement.node.addEventListener("mousewheel", function ( e ) {
         e.preventDefault();
-        var startValue          = scrubberElement.options.adapter.start ( scrubberElement );
-        scrubberElement.options.adapter.change ( scrubberElement, startValue - e.wheelDelta );
+        var startValue          = scrubbingElement.options.adapter.start ( scrubbingElement );
+        scrubbingElement.options.adapter.change ( scrubbingElement, startValue - e.wheelDelta );
       }, false);
 
     },
 
-    remove : function ( scrubberElement ) { }
+    remove : function ( scrubbingElement ) { }
   };
 
 })(window);

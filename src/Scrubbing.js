@@ -1,15 +1,15 @@
 //  Base Object
 //
-//  Used to create a Scrubber
+//  Used to create a Scrubbing
 //
-//      `node` : Scrubber will be bound to this element
+//      `node` : Scrubbing will be bound to this element
 //      `userOptions` : [optional] Here you can pass some Options
 //
-var Scrubber = function ( node, userOptions ) {
+var Scrubbing = function ( node, userOptions ) {
 
   // Make `new` optional
-  if ( !( this instanceof Scrubber )){
-    return new Scrubber ( userOptions );
+  if ( !( this instanceof Scrubbing )){
+    return new Scrubbing ( userOptions );
   }
   // Save DOM node
   this.node        =  node;
@@ -17,9 +17,9 @@ var Scrubber = function ( node, userOptions ) {
   // Add Options
   this.options     = {};
 
-  fillOption ( this.options, userOptions, defaultOptions, Scrubber.driver,   "driver");
-  fillOption ( this.options, userOptions, defaultOptions, Scrubber.resolver, "resolver");
-  fillOption ( this.options, userOptions, defaultOptions, Scrubber.adapter,  "adapter");
+  fillOption ( this.options, userOptions, defaultOptions, Scrubbing.driver,   "driver");
+  fillOption ( this.options, userOptions, defaultOptions, Scrubbing.resolver, "resolver");
+  fillOption ( this.options, userOptions, defaultOptions, Scrubbing.adapter,  "adapter");
 
 
   this.node.dataset.scrubOrientation = this.options.resolver.name;
@@ -30,8 +30,7 @@ var Scrubber = function ( node, userOptions ) {
   callObjOrArray ( this.options.driver, "init", this);
 };
 
-Scrubber.prototype = {
-
+Scrubbing.prototype = {
     remove   : function (){
       callObjOrArray ( this.options.driver, "remove", this);
     }

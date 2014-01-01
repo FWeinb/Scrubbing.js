@@ -1,12 +1,12 @@
 
-  Scrubber.driver   = {
+  Scrubbing.driver   = {
                         Mouse     : MouseDriver,
                         MouseWheel: MouseWheelDriver
                        };
 
-  Scrubber.adapter  = { BasicNode : BasicNodeAdapter };
+  Scrubbing.adapter  = { BasicNode : BasicNodeAdapter };
 
-  Scrubber.resolver = {
+  Scrubbing.resolver = {
                         DefaultHorizontal  : HorizontalResolverProvider (),
                         DefaultVertical    : VerticalResolverProvider   (),
 
@@ -14,6 +14,6 @@
                         VerticalProvider   : VerticalResolverProvider
                       };
 
-  window.Scrubber = Scrubber;
+  window.Scrubbing = Scrubbing;
 
 })(window);

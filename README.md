@@ -1,12 +1,12 @@
-# Scrubber.js
+# Scrubbing.js
 
-Highly customizable mouse scrubber implementation for numbers and custom data.
+Highly customizable mouse scrubbing implementation for numbers and custom data.
 
 ## Getting Started
 
 Basic API:
 
-    new Scrubber ( node, {
+    new Scrubbing ( node, {
       resolver : /* a resolver */,
       driver   : /* a driver or array of Drivers */,
       adapter  : /* an adapter or array of adapter */
@@ -14,7 +14,7 @@ Basic API:
 
 Default usage:
 
-    new Scrubber ( node );
+    new Scrubbing ( node );
 
 This will create a default horizontal scrubbable DOM node.
 
@@ -25,7 +25,7 @@ This will create a default horizontal scrubbable DOM node.
 
 ## Overview
 
-The main goal while developing Scrubber.js was to make it as customizable as possible. To achieve this it is composed of three unattached and changeable components called:
+The main goal while developing Scrubbing.js was to make it as customizable as possible. To achieve this it is composed of three unattached and changeable components called:
 
   * Driver
   * Resolver
@@ -34,7 +34,7 @@ The main goal while developing Scrubber.js was to make it as customizable as pos
 
 ### Driver
 
-The driver is responsable for the heavy lifting it. Scrubber.js ships with a fully functional `MouseDriver`.
+The driver is responsable for the heavy lifting it. Scrubbing.js ships with a fully functional `MouseDriver`.
 Which is the default driver. The `MouseDriver` implements the basic scrubbing.
 
 A basic driver implementation would look like this:
@@ -42,17 +42,17 @@ A basic driver implementation would look like this:
     var BasicDriver = (function(window, undefined){
 
       return {
-        init : function ( scrubberElement ) {
+        init : function ( scrubbingElement ) {
 
         },
 
-        remove : function ( scrubberElement ) { }
+        remove : function ( scrubbingElement ) { }
       };
 
     })(window);
 
-Basicly a driver is a object which consists of an `init` function which is called everytime a new Scrubber was created.
-The `remove` function is called everytime a scrubber was removed using `scrubber.remove()`
+Basicly a driver is a object which consists of an `init` function which is called everytime a new scrubbing was created.
+The `remove` function is called everytime a scrubbing element was removed using `Scrubbing.remove()`
 
 
 ### Resolver
@@ -70,24 +70,24 @@ A Resolver is used to caluclate the delta between the inital `mousedown` value a
 
 The `coordinate` function must return a value/object which will than subsequentialy be used as parameter for the `value` function. `value` will return the computed delta between the `startCoordinate` and the `currentCoordinate`
 
-Scrubber.js ships with a Horizontal/Vertical resolver. (See Example below)
+Scrubbing.js ships with a Horizontal/Vertical resolver. (See Example below)
 
 ### Adapter
 
-Adapters are used to bridge between the DOM and the Scrubber.
+Adapters are used to bridge between the DOM and the Scrubbing Element.
 
     var BasicAdapter = {
 
-      init : function ( scrubberElement ) { },
+      init : function ( scrubbingElement ) { },
 
-      start : function ( scrubberElement ) { },
+      start : function ( scrubbingElement ) { },
 
-      change : function ( scrubberElement, value, delta ) { },
+      change : function ( scrubbingElement, value, delta ) { },
 
-      end : function ( scrubberElement ) { }
+      end : function ( scrubbingElement ) { }
     };
 
-The `init` function of an adapter is called everytime a new scrubber element was created. You can perfome inital task there.
+The `init` function of an adapter is called everytime a new scrubbing element was created. You can perfome inital task there.
 
 In the `start` function which is called when the scrubbing has started you must return the inital (numeric) value. From which you want to scrub.
 
