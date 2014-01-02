@@ -6,7 +6,7 @@ var MouseWheelDriver = (function(window, undefined){
       scrubbingElement.node.addEventListener("mousewheel", function ( e ) {
         e.preventDefault();
         var startValue          = scrubbingElement.options.adapter.start ( scrubbingElement );
-        scrubbingElement.options.adapter.change ( scrubbingElement, startValue - e.wheelDelta );
+        scrubbingElement.options.adapter.change ( scrubbingElement, startValue - e.wheelDelta, e.wheelDelta );
       }, false);
 
     },
