@@ -24,6 +24,9 @@ var Scrubbing = function ( node, userOptions ) {
 
   this.node.dataset.scrubOrientation = this.options.resolver.name;
 
+  // Add Scrubbing element to node
+  node.scrubbingElement = this;
+
   // Initialise Adapter
   this.options.adapter.init ( this );
   // Initialise Driver
@@ -32,6 +35,7 @@ var Scrubbing = function ( node, userOptions ) {
 
 Scrubbing.prototype = {
     remove   : function (){
+      delete node.scrubbingElement;
       callObjOrArray ( this.options.driver, "remove", this);
     }
 };

@@ -10,9 +10,11 @@ var TouchDriver = (function(window, undefined){
       touchstartListener = function ( e ){
         if ( e.targetTouches.length !== 1) return;
         var touchEvent = e.targetTouches[0];
+
         if ( !! touchEvent.target.scrubbingElement ) {
-          currentElement = touchEvent.target.scrubbingElement;
           e.preventDefault();
+
+          currentElement = touchEvent.target.scrubbingElement;
 
           var startValue          = currentElement.options.adapter.start ( currentElement ),
               coordinateResolver  = function ( e ) { return currentElement.options.resolver.coordinate( e ); },
@@ -39,13 +41,9 @@ var TouchDriver = (function(window, undefined){
   return {
     init : function ( scrubbingElement ) {
       init_once ();
-
-      scrubbingElement.node.scrubbingElement = scrubbingElement;
       scrubbingElement.node.addEventListener ( 'touchstart', touchstartListener, false );
     },
 
-    remove : function ( scrubbingElement ) {
-
-    } 
+    remove : function ( scrubbingElement ) { } 
   };
 })(window, undefined);
