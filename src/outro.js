@@ -1,7 +1,9 @@
 
   Scrubbing.driver   = {
                         Mouse     : MouseDriver,
-                        MouseWheel: MouseWheelDriver
+                        MouseWheel: MouseWheelDriver,
+
+                        Touch     : TouchDriver
                        };
 
   Scrubbing.adapter  = { BasicNode : BasicNodeAdapter };
