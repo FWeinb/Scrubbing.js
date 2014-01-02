@@ -25,7 +25,7 @@ var Scrubbing = function ( node, userOptions ) {
   this.node.dataset.scrubOrientation = this.options.resolver.name;
 
   // Initialise Adapter
-  callObjOrArray ( this.options.adapter, "init", this);
+  this.options.adapter.init ( this );
   // Initialise Driver
   callObjOrArray ( this.options.driver, "init", this);
 };

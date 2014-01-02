@@ -20,13 +20,13 @@ fillOption = function ( newOptions, userOption, defaultOptions, searchObj, optio
   }
 },
 
-callObjOrArray = function ( objOrArr, methodName, param ){
+callObjOrArray = function ( objOrArr, methodName, p1, p2, p3 ){
   if ( Array.isArray ( objOrArr ) ) {
     objOrArr.forEach(function ( obj ){
-      obj[methodName] ( param );
+      obj[methodName] ( p1, p2, p3 );
     });
   } else { 
-    objOrArr[methodName] ( param );
+    objOrArr[methodName] ( p1, p2, p3 );
   }
 
 };

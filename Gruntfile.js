@@ -8,13 +8,16 @@ module.exports = function(grunt) {
       dist: {
         src: [  'src/intro.js',
 
+                'src/Helper.js',
+
                 'src/Adapter/*.js',
                 'src/Resolver/BasicResolver.js',
                 'src/Resolver/DefaultResolver.js',
+
                 'src/Driver/MouseDriver.js',
+                'src/Driver/TouchDriver.js',
                 'src/Driver/MouseWheelDriver.js',
 
-                'src/Helper.js',
 
                 'src/Defaults.js',
                 'src/Scrubbing.js',
