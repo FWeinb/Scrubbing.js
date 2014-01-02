@@ -23,6 +23,12 @@ This will create a default horizontal scrubbable DOM node.
 
 [View on Codepen](http://codepen.io/FWeinb/pen/8fd14e108c720daa1ec362c3fb948280)
 
+## Contribute
+
+  1. Fork this Repo
+  2. Run `npm install`
+  3. Add your feature
+  4. `grunt build`
 
 ## Overview
 
