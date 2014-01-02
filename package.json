@@ -1,6 +1,6 @@
 {
   "name": "Scrubbing",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Highly customizable mouse scrubbing implementation for numbers and custom data.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

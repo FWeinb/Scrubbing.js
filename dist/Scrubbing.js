@@ -121,9 +121,6 @@ var MouseDriver = (function (){
   var globalMouseMoveListener, // Holds the current MouseMoveListener
       currentElement,          // Holds the current Element
 
-      scrubbingElements = [],   // Holds all scrubable Elements
-
-
       globalMouseUpListener = function (  ) {
         this.removeEventListener('mousemove', globalMouseMoveListener, false);
 
@@ -133,12 +130,10 @@ var MouseDriver = (function (){
       },
 
       globalMouseDownListener = function ( e ) {
-
-        scrubbingElements.forEach ( function ( scrubElement ) {
-          if ( scrubElement.node === e.target ) {
+        if ( !! e.target.scrubbingElement ) {
             e.preventDefault();
 
-            currentElement = scrubElement;
+            currentElement = e.target.scrubbingElement;
 
             var startValue          = currentElement.options.adapter.start ( currentElement ),
                 coordinateResolver  = function ( e ) { return currentElement.options.resolver.coordinate( e ); },
@@ -148,8 +143,7 @@ var MouseDriver = (function (){
             globalMouseMoveListener = function  ( e ) {
               if ( e.which === 1 ) {
                 var delta = currentElement.options.resolver.value ( startCoordinate, coordinateResolver ( e ) );
-
-                currentElement.options.adapter.change ( currentElement, startValue +  delta, delta );
+                            currentElement.options.adapter.change ( currentElement, startValue +  delta, delta );
               } else { 
                 globalMouseUpListener ();
               }
@@ -160,7 +154,6 @@ var MouseDriver = (function (){
 
             return true;
           }
-        });
       },
 
       init_once = function (){
@@ -171,19 +164,10 @@ var MouseDriver = (function (){
   return {
 
       init : function ( scrubbingElement ) {
-        scrubbingElements.push ( scrubbingElement );
         init_once ();
       },
 
-      remove : function ( scrubbingElement ){
-        for (var i = scrubbingElement.length - 1; i >= 0; i--) {
-          var elem = scrubbingElement[i];
-          if ( elem === scrubbingElement ) {
-            scrubbingElement.splice(i,1);
-            break;
-          }
-        }
-      }
+      remove : function ( scrubbingElement ) { }
   };
 })();
 
@@ -199,9 +183,11 @@ var TouchDriver = (function(window, undefined){
       touchstartListener = function ( e ){
         if ( e.targetTouches.length !== 1) return;
         var touchEvent = e.targetTouches[0];
+
         if ( !! touchEvent.target.scrubbingElement ) {
-          currentElement = touchEvent.target.scrubbingElement;
           e.preventDefault();
+
+          currentElement = touchEvent.target.scrubbingElement;
 
           var startValue          = currentElement.options.adapter.start ( currentElement ),
               coordinateResolver  = function ( e ) { return currentElement.options.resolver.coordinate( e ); },
@@ -228,14 +214,10 @@ var TouchDriver = (function(window, undefined){
   return {
     init : function ( scrubbingElement ) {
       init_once ();
-
-      scrubbingElement.node.scrubbingElement = scrubbingElement;
       scrubbingElement.node.addEventListener ( 'touchstart', touchstartListener, false );
     },
 
-    remove : function ( scrubbingElement ) {
-
-    } 
+    remove : function ( scrubbingElement ) { } 
   };
 })(window, undefined);
 
@@ -291,6 +273,9 @@ var Scrubbing = function ( node, userOptions ) {
 
   this.node.dataset.scrubOrientation = this.options.resolver.name;
 
+  // Add Scrubbing element to node
+  node.scrubbingElement = this;
+
   // Initialise Adapter
   this.options.adapter.init ( this );
   // Initialise Driver
@@ -299,6 +284,7 @@ var Scrubbing = function ( node, userOptions ) {
 
 Scrubbing.prototype = {
     remove   : function (){
+      delete node.scrubbingElement;
       callObjOrArray ( this.options.driver, "remove", this);
     }
 };

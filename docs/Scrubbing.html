@@ -308,9 +308,6 @@ DOM and reflect new values back in the DOM. A <code>resolver</code> is used to c
   <span class="keyword">var</span> globalMouseMoveListener, <span class="comment">// Holds the current MouseMoveListener</span>
       currentElement,          <span class="comment">// Holds the current Element</span>
 
-      scrubbingElements = [],   <span class="comment">// Holds all scrubable Elements</span>
-
-
       globalMouseUpListener = <span class="function"><span class="keyword">function</span> <span class="params">(  )</span> {</span>
         <span class="keyword">this</span>.removeEventListener(<span class="string">'mousemove'</span>, globalMouseMoveListener, <span class="literal">false</span>);
 
@@ -320,12 +317,10 @@ DOM and reflect new values back in the DOM. A <code>resolver</code> is used to c
       },
 
       globalMouseDownListener = <span class="function"><span class="keyword">function</span> <span class="params">( e )</span> {</span>
-
-        scrubbingElements.forEach ( <span class="function"><span class="keyword">function</span> <span class="params">( scrubElement )</span> {</span>
-          <span class="keyword">if</span> ( scrubElement.node === e.target ) {
+        <span class="keyword">if</span> ( !! e.target.scrubbingElement ) {
             e.preventDefault();
 
-            currentElement = scrubElement;
+            currentElement = e.target.scrubbingElement;
 
             <span class="keyword">var</span> startValue          = currentElement.options.adapter.start ( currentElement ),
                 coordinateResolver  = <span class="function"><span class="keyword">function</span> <span class="params">( e )</span> {</span> <span class="keyword">return</span> currentElement.options.resolver.coordinate( e ); },
@@ -335,8 +330,7 @@ DOM and reflect new values back in the DOM. A <code>resolver</code> is used to c
             globalMouseMoveListener = <span class="function"><span class="keyword">function</span>  <span class="params">( e )</span> {</span>
               <span class="keyword">if</span> ( e.which === <span class="number">1</span> ) {
                 <span class="keyword">var</span> delta = currentElement.options.resolver.value ( startCoordinate, coordinateResolver ( e ) );
-
-                currentElement.options.adapter.change ( currentElement, startValue +  delta, delta );
+                            currentElement.options.adapter.change ( currentElement, startValue +  delta, delta );
               } <span class="keyword">else</span> { 
                 globalMouseUpListener ();
               }
@@ -347,7 +341,6 @@ DOM and reflect new values back in the DOM. A <code>resolver</code> is used to c
 
             <span class="keyword">return</span> <span class="literal">true</span>;
           }
-        });
       },
 
       init_once = <span class="function"><span class="keyword">function</span> <span class="params">()</span>{</span>
@@ -358,19 +351,10 @@ DOM and reflect new values back in the DOM. A <code>resolver</code> is used to c
   <span class="keyword">return</span> {
 
       init : <span class="function"><span class="keyword">function</span> <span class="params">( scrubbingElement )</span> {</span>
-        scrubbingElements.push ( scrubbingElement );
         init_once ();
       },
 
-      remove : <span class="function"><span class="keyword">function</span> <span class="params">( scrubbingElement )</span>{</span>
-        <span class="keyword">for</span> (<span class="keyword">var</span> i = scrubbingElement.length - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--) {
-          <span class="keyword">var</span> elem = scrubbingElement[i];
-          <span class="keyword">if</span> ( elem === scrubbingElement ) {
-            scrubbingElement.splice(i,<span class="number">1</span>);
-            <span class="keyword">break</span>;
-          }
-        }
-      }
+      remove : <span class="function"><span class="keyword">function</span> <span class="params">( scrubbingElement )</span> {</span> }
   };
 })();
 
@@ -386,9 +370,11 @@ DOM and reflect new values back in the DOM. A <code>resolver</code> is used to c
       touchstartListener = <span class="function"><span class="keyword">function</span> <span class="params">( e )</span>{</span>
         <span class="keyword">if</span> ( e.targetTouches.length !== <span class="number">1</span>) <span class="keyword">return</span>;
         <span class="keyword">var</span> touchEvent = e.targetTouches[<span class="number">0</span>];
+
         <span class="keyword">if</span> ( !! touchEvent.target.scrubbingElement ) {
-          currentElement = touchEvent.target.scrubbingElement;
           e.preventDefault();
+
+          currentElement = touchEvent.target.scrubbingElement;
 
           <span class="keyword">var</span> startValue          = currentElement.options.adapter.start ( currentElement ),
               coordinateResolver  = <span class="function"><span class="keyword">function</span> <span class="params">( e )</span> {</span> <span class="keyword">return</span> currentElement.options.resolver.coordinate( e ); },
@@ -415,14 +401,10 @@ DOM and reflect new values back in the DOM. A <code>resolver</code> is used to c
   <span class="keyword">return</span> {
     init : <span class="function"><span class="keyword">function</span> <span class="params">( scrubbingElement )</span> {</span>
       init_once ();
-
-      scrubbingElement.node.scrubbingElement = scrubbingElement;
       scrubbingElement.node.addEventListener ( <span class="string">'touchstart'</span>, touchstartListener, <span class="literal">false</span> );
     },
 
-    remove : <span class="function"><span class="keyword">function</span> <span class="params">( scrubbingElement )</span> {</span>
-
-    } 
+    remove : <span class="function"><span class="keyword">function</span> <span class="params">( scrubbingElement )</span> {</span> } 
   };
 })(window, <span class="literal">undefined</span>);
 
@@ -544,11 +526,11 @@ DOM and reflect new values back in the DOM. A <code>resolver</code> is used to c
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-21">&#182;</a>
               </div>
-              <p>Initialise Adapter</p>
+              <p>Add Scrubbing element to node</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="keyword">this</span>.options.adapter.init ( <span class="keyword">this</span> );</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  node.scrubbingElement = <span class="keyword">this</span>;</pre></div></div>
             
         </li>
         
@@ -559,6 +541,21 @@ DOM and reflect new values back in the DOM. A <code>resolver</code> is used to c
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
+              <p>Initialise Adapter</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">this</span>.options.adapter.init ( <span class="keyword">this</span> );</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
               <p>Initialise Driver</p>
 
             </div>
@@ -568,6 +565,7 @@ DOM and reflect new values back in the DOM. A <code>resolver</code> is used to c
 
 Scrubbing.prototype = {
     remove   : <span class="function"><span class="keyword">function</span> <span class="params">()</span>{</span>
+      <span class="keyword">delete</span> node.scrubbingElement;
       callObjOrArray ( <span class="keyword">this</span>.options.driver, <span class="string">"remove"</span>, <span class="keyword">this</span>);
     }
 };
