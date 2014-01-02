@@ -2,7 +2,6 @@ var MouseWheelDriver = (function(window, undefined){
 
   return {
     init : function ( scrubbingElement ) {
-
       scrubbingElement.node.addEventListener("mousewheel", function ( e ) {
         e.preventDefault();
         var startValue          = scrubbingElement.options.adapter.start ( scrubbingElement );
@@ -10,7 +9,6 @@ var MouseWheelDriver = (function(window, undefined){
       }, false);
 
     },
-
     remove : function ( scrubbingElement ) { }
   };
 

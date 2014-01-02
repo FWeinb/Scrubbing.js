@@ -24,7 +24,7 @@ var Scrubbing = function ( node, userOptions ) {
 
   this.node.dataset.scrubOrientation = this.options.resolver.name;
 
-  // Add Scrubbing element to node
+  // Add scrubbing element to node
   node.scrubbingElement = this;
 
   // Initialise Adapter
