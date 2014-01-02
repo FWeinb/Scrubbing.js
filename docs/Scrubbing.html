@@ -30,7 +30,10 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>(<span class="function"><span class="keyword">function</span> <span class="params">(window, undefined)</span>{</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>(<span class="function"><span class="keyword">function</span> <span class="params">(window, undefined)</span>{</span>
+
+<span class="keyword">var</span> resolveStrToObj = <span class="function"><span class="keyword">function</span> <span class="params">( objOrStr, searchObj )</span> {</span>
+  <span class="keyword">if</span> ( ! objOrStr ) <span class="keyword">return</span>;</pre></div></div>
             
         </li>
         
@@ -40,6 +43,74 @@
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>If <code>objOrStr</code> is a String search for it in the <code>searchObj</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">if</span> ( <span class="keyword">typeof</span> objOrStr === <span class="string">"string"</span>) {
+    <span class="keyword">return</span> searchObj[objOrStr];
+  }
+
+  <span class="keyword">return</span> objOrStr;
+},
+
+fillOption = <span class="function"><span class="keyword">function</span> <span class="params">( newOptions, userOption, defaultOptions, searchObj, optionName )</span> {</span>
+  <span class="keyword">if</span> ( ! userOption ) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>No userOptions, use defaults</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    newOptions[optionName] = defaultOptions[optionName];
+  } <span class="keyword">else</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>User Options are there.
+Search for the <code>optionName</code> and resolve it.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    newOptions[optionName] = resolveStrToObj ( userOption[optionName], searchObj ) || defaultOptions[optionName];
+  }
+},
+
+callObjOrArray = <span class="function"><span class="keyword">function</span> <span class="params">( objOrArr, methodName, p1, p2, p3 )</span>{</span>
+  <span class="keyword">if</span> ( Array.isArray ( objOrArr ) ) {
+    objOrArr.forEach(<span class="function"><span class="keyword">function</span> <span class="params">( obj )</span>{</span>
+      obj[methodName] ( p1, p2, p3 );
+    });
+  } <span class="keyword">else</span> { 
+    objOrArr[methodName] ( p1, p2, p3 );
+  }
+
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
               <p>Adapter are used to bridge between the scrubbing Element and the DOM</p>
 <p>The BasicNode Adapter comes bundled and allows the scrubbing to work
@@ -52,11 +123,11 @@ on DOM elements, reading the starting value from DOM and writing it back on chan
         </li>
         
         
-        <li id="section-3">
+        <li id="section-6">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-3">&#182;</a>
+                <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
               <p>Called everytime a new <code>scrubbingElement</code> was created.</p>
 
@@ -67,11 +138,11 @@ on DOM elements, reading the starting value from DOM and writing it back on chan
         </li>
         
         
-        <li id="section-4">
+        <li id="section-7">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-4">&#182;</a>
+                <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
               <p>Called before the scrubbing starts.</p>
 <p>Return the inital value for scrubbing</p>
@@ -85,11 +156,11 @@ on DOM elements, reading the starting value from DOM and writing it back on chan
         </li>
         
         
-        <li id="section-5">
+        <li id="section-8">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-5">&#182;</a>
+                <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
               <p>Called if the <code>value</code> for the <code>scrubbingElement</code> has changed.
 Where <code>value</code> is the value calculated from <code>start</code> and
@@ -104,11 +175,11 @@ the Resolver which is used.</p>
         </li>
         
         
-        <li id="section-6">
+        <li id="section-9">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-6">&#182;</a>
+                <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
               <p> Called when the scrubbing ends.</p>
 
@@ -120,11 +191,11 @@ the Resolver which is used.</p>
         </li>
         
         
-        <li id="section-7">
+        <li id="section-10">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-7">&#182;</a>
+                <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
               <p>Resolver are used to calculate the coordinates and scrubbing value</p>
 <p>The BasicResolver is used to construct the <code>HorizontalResolver</code> and the <code>VerticalResolver</code>
@@ -144,11 +215,11 @@ BasicResolver.prototype = {</pre></div></div>
         </li>
         
         
-        <li id="section-8">
+        <li id="section-11">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-8">&#182;</a>
+                <a class="pilcrow" href="#section-11">&#182;</a>
               </div>
               <p> Used to determin the <code>startCoordinate</code> and <code>currentCoordinate</code></p>
 <p>  e : MouseEvent/TouchEvent/Event</p>
@@ -163,11 +234,11 @@ BasicResolver.prototype = {</pre></div></div>
         </li>
         
         
-        <li id="section-9">
+        <li id="section-12">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-9">&#182;</a>
+                <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
               <p> Calculate the diffrence between the <code>startCoordinate</code> and the <code>currentCoordinate</code></p>
 <p> return Value used to calculate the new numeric value</p>
@@ -182,11 +253,11 @@ BasicResolver.prototype = {</pre></div></div>
         </li>
         
         
-        <li id="section-10">
+        <li id="section-13">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-10">&#182;</a>
+                <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
               <p>This function creates provider for different BasicResolver
 It is used to create the bundled <code>HorizontalResolver</code> and <code>VerticalResolver</code></p>
@@ -203,11 +274,11 @@ It is used to create the bundled <code>HorizontalResolver</code> and <code>Verti
         </li>
         
         
-        <li id="section-11">
+        <li id="section-14">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-11">&#182;</a>
+                <a class="pilcrow" href="#section-14">&#182;</a>
               </div>
               <p>Create Horizontal/Vertical Resolver</p>
 
@@ -219,11 +290,11 @@ It is used to create the bundled <code>HorizontalResolver</code> and <code>Verti
         </li>
         
         
-        <li id="section-12">
+        <li id="section-15">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-12">&#182;</a>
+                <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
               <p>A driver defines the input method used to scrub values.
 The default mouse driver uses a combination of <code>mousedown</code>, <code>mouseup</code> and <code>mousemove</code>
@@ -303,6 +374,58 @@ DOM and reflect new values back in the DOM. A <code>resolver</code> is used to c
   };
 })();
 
+<span class="keyword">var</span> TouchDriver = (<span class="function"><span class="keyword">function</span><span class="params">(window, undefined)</span>{</span>
+  <span class="keyword">var</span> currentElement,
+      globalTouchMoveListener,
+      globalTouchEndListener = <span class="function"><span class="keyword">function</span> <span class="params">( e )</span> {</span>
+        window.removeEventListener ( <span class="string">'touchmove'</span>, globalTouchMoveListener, <span class="literal">false</span> );
+        <span class="keyword">if</span> (!! currentElement ) {
+          currentElement.options.adapter.end ( currentElement );
+        }
+      },
+      touchstartListener = <span class="function"><span class="keyword">function</span> <span class="params">( e )</span>{</span>
+        <span class="keyword">if</span> ( e.targetTouches.length !== <span class="number">1</span>) <span class="keyword">return</span>;
+        <span class="keyword">var</span> touchEvent = e.targetTouches[<span class="number">0</span>];
+        <span class="keyword">if</span> ( !! touchEvent.target.scrubbingElement ) {
+          currentElement = touchEvent.target.scrubbingElement;
+          e.preventDefault();
+
+          <span class="keyword">var</span> startValue          = currentElement.options.adapter.start ( currentElement ),
+              coordinateResolver  = <span class="function"><span class="keyword">function</span> <span class="params">( e )</span> {</span> <span class="keyword">return</span> currentElement.options.resolver.coordinate( e ); },
+              startCoordinate     = coordinateResolver( touchEvent );
+
+          globalTouchMoveListener = <span class="function"><span class="keyword">function</span> <span class="params">( e )</span> {</span> 
+            <span class="keyword">if</span> ( e.targetTouches.length !== <span class="number">1</span>) <span class="keyword">return</span>;
+            e.preventDefault();
+            <span class="keyword">var</span> delta = currentElement.options.resolver.value ( startCoordinate, coordinateResolver ( e.targetTouches[<span class="number">0</span>] ) );
+            currentElement.options.adapter.change ( currentElement, startValue +  delta, delta );
+          };
+
+          window.addEventListener ( <span class="string">'touchmove'</span>, globalTouchMoveListener, <span class="literal">false</span> );
+        }
+      },
+
+      init_once = <span class="function"><span class="keyword">function</span> <span class="params">( )</span> {</span>
+        window.addEventListener ( <span class="string">'touchcancel'</span>, globalTouchEndListener, <span class="literal">false</span> );
+        window.addEventListener ( <span class="string">'touchend'</span>, globalTouchEndListener, <span class="literal">false</span> );
+        init_once = <span class="function"><span class="keyword">function</span> <span class="params">( )</span> {</span> };
+      };
+
+
+  <span class="keyword">return</span> {
+    init : <span class="function"><span class="keyword">function</span> <span class="params">( scrubbingElement )</span> {</span>
+      init_once ();
+
+      scrubbingElement.node.scrubbingElement = scrubbingElement;
+      scrubbingElement.node.addEventListener ( <span class="string">'touchstart'</span>, touchstartListener, <span class="literal">false</span> );
+    },
+
+    remove : <span class="function"><span class="keyword">function</span> <span class="params">( scrubbingElement )</span> {</span>
+
+    } 
+  };
+})(window, <span class="literal">undefined</span>);
+
 <span class="keyword">var</span> MouseWheelDriver = (<span class="function"><span class="keyword">function</span><span class="params">(window, undefined)</span>{</span>
 
   <span class="keyword">return</span> {
@@ -311,7 +434,7 @@ DOM and reflect new values back in the DOM. A <code>resolver</code> is used to c
       scrubbingElement.node.addEventListener(<span class="string">"mousewheel"</span>, <span class="function"><span class="keyword">function</span> <span class="params">( e )</span> {</span>
         e.preventDefault();
         <span class="keyword">var</span> startValue          = scrubbingElement.options.adapter.start ( scrubbingElement );
-        scrubbingElement.options.adapter.change ( scrubbingElement, startValue - e.wheelDelta );
+        scrubbingElement.options.adapter.change ( scrubbingElement, startValue - e.wheelDelta, e.wheelDelta );
       }, <span class="literal">false</span>);
 
     },
@@ -319,78 +442,7 @@ DOM and reflect new values back in the DOM. A <code>resolver</code> is used to c
     remove : <span class="function"><span class="keyword">function</span> <span class="params">( scrubbingElement )</span> {</span> }
   };
 
-})(window);
-
-<span class="keyword">var</span> resolveStrToObj = <span class="function"><span class="keyword">function</span> <span class="params">( objOrStr, searchObj )</span> {</span>
-  <span class="keyword">if</span> ( ! objOrStr ) <span class="keyword">return</span>;</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-13">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-13">&#182;</a>
-              </div>
-              <p>If <code>objOrStr</code> is a String search for it in the <code>searchObj</code></p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  <span class="keyword">if</span> ( <span class="keyword">typeof</span> objOrStr === <span class="string">"string"</span>) {
-    <span class="keyword">return</span> searchObj[objOrStr];
-  }
-
-  <span class="keyword">return</span> objOrStr;
-},
-
-fillOption = <span class="function"><span class="keyword">function</span> <span class="params">( newOptions, userOption, defaultOptions, searchObj, optionName )</span> {</span>
-  <span class="keyword">if</span> ( ! userOption ) {</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-14">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-14">&#182;</a>
-              </div>
-              <p>No userOptions, use defaults</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>    newOptions[optionName] = defaultOptions[optionName];
-  } <span class="keyword">else</span> {</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-15">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-15">&#182;</a>
-              </div>
-              <p>User Options are there.
-Search for the <code>optionName</code> and resolve it.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>    newOptions[optionName] = resolveStrToObj ( userOption[optionName], searchObj ) || defaultOptions[optionName];
-  }
-},
-
-callObjOrArray = <span class="function"><span class="keyword">function</span> <span class="params">( objOrArr, methodName, param )</span>{</span>
-  <span class="keyword">if</span> ( Array.isArray ( objOrArr ) ) {
-    objOrArr.forEach(<span class="function"><span class="keyword">function</span> <span class="params">( obj )</span>{</span>
-      obj[methodName] ( param );
-    });
-  } <span class="keyword">else</span> { 
-    objOrArr[methodName] ( param );
-  }
-
-};</pre></div></div>
+})(window);</pre></div></div>
             
         </li>
         
@@ -406,7 +458,7 @@ callObjOrArray = <span class="function"><span class="keyword">function</span> <s
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="keyword">var</span> defaultOptions = {
-  driver      : MouseDriver,
+  driver      : [ TouchDriver, MouseDriver ],
   resolver    : HorizontalResolverProvider ( ),
   adapter     : BasicNodeAdapter
 };</pre></div></div>
@@ -496,7 +548,7 @@ callObjOrArray = <span class="function"><span class="keyword">function</span> <s
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  callObjOrArray ( <span class="keyword">this</span>.options.adapter, <span class="string">"init"</span>, <span class="keyword">this</span>);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">this</span>.options.adapter.init ( <span class="keyword">this</span> );</pre></div></div>
             
         </li>
         
@@ -523,7 +575,9 @@ Scrubbing.prototype = {
 
   Scrubbing.driver   = {
                         Mouse     : MouseDriver,
-                        MouseWheel: MouseWheelDriver
+                        MouseWheel: MouseWheelDriver,
+
+                        Touch     : TouchDriver
                        };
 
   Scrubbing.adapter  = { BasicNode : BasicNodeAdapter };

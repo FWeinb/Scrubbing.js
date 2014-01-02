@@ -1,5 +1,38 @@
 (function (window, undefined){
 
+var resolveStrToObj = function ( objOrStr, searchObj ) {
+  if ( ! objOrStr ) return;
+
+  // If `objOrStr` is a String search for it in the `searchObj`
+  if ( typeof objOrStr === "string") {
+    return searchObj[objOrStr];
+  }
+
+  return objOrStr;
+},
+
+fillOption = function ( newOptions, userOption, defaultOptions, searchObj, optionName ) {
+  if ( ! userOption ) {
+    // No userOptions, use defaults
+    newOptions[optionName] = defaultOptions[optionName];
+  } else {
+    // User Options are there.
+    // Search for the `optionName` and resolve it.
+    newOptions[optionName] = resolveStrToObj ( userOption[optionName], searchObj ) || defaultOptions[optionName];
+  }
+},
+
+callObjOrArray = function ( objOrArr, methodName, p1, p2, p3 ){
+  if ( Array.isArray ( objOrArr ) ) {
+    objOrArr.forEach(function ( obj ){
+      obj[methodName] ( p1, p2, p3 );
+    });
+  } else { 
+    objOrArr[methodName] ( p1, p2, p3 );
+  }
+
+};
+
 // Adapter are used to bridge between the scrubbing Element and the DOM
 
 
@@ -154,6 +187,58 @@ var MouseDriver = (function (){
   };
 })();
 
+var TouchDriver = (function(window, undefined){
+  var currentElement,
+      globalTouchMoveListener,
+      globalTouchEndListener = function ( e ) {
+        window.removeEventListener ( 'touchmove', globalTouchMoveListener, false );
+        if (!! currentElement ) {
+          currentElement.options.adapter.end ( currentElement );
+        }
+      },
+      touchstartListener = function ( e ){
+        if ( e.targetTouches.length !== 1) return;
+        var touchEvent = e.targetTouches[0];
+        if ( !! touchEvent.target.scrubbingElement ) {
+          currentElement = touchEvent.target.scrubbingElement;
+          e.preventDefault();
+
+          var startValue          = currentElement.options.adapter.start ( currentElement ),
+              coordinateResolver  = function ( e ) { return currentElement.options.resolver.coordinate( e ); },
+              startCoordinate     = coordinateResolver( touchEvent );
+
+          globalTouchMoveListener = function ( e ) { 
+            if ( e.targetTouches.length !== 1) return;
+            e.preventDefault();
+            var delta = currentElement.options.resolver.value ( startCoordinate, coordinateResolver ( e.targetTouches[0] ) );
+            currentElement.options.adapter.change ( currentElement, startValue +  delta, delta );
+          };
+
+          window.addEventListener ( 'touchmove', globalTouchMoveListener, false );
+        }
+      },
+
+      init_once = function ( ) {
+        window.addEventListener ( 'touchcancel', globalTouchEndListener, false );
+        window.addEventListener ( 'touchend', globalTouchEndListener, false );
+        init_once = function ( ) { };
+      };
+
+
+  return {
+    init : function ( scrubbingElement ) {
+      init_once ();
+
+      scrubbingElement.node.scrubbingElement = scrubbingElement;
+      scrubbingElement.node.addEventListener ( 'touchstart', touchstartListener, false );
+    },
+
+    remove : function ( scrubbingElement ) {
+
+    } 
+  };
+})(window, undefined);
+
 var MouseWheelDriver = (function(window, undefined){
 
   return {
@@ -162,7 +247,7 @@ var MouseWheelDriver = (function(window, undefined){
       scrubbingElement.node.addEventListener("mousewheel", function ( e ) {
         e.preventDefault();
         var startValue          = scrubbingElement.options.adapter.start ( scrubbingElement );
-        scrubbingElement.options.adapter.change ( scrubbingElement, startValue - e.wheelDelta );
+        scrubbingElement.options.adapter.change ( scrubbingElement, startValue - e.wheelDelta, e.wheelDelta );
       }, false);
 
     },
@@ -172,42 +257,9 @@ var MouseWheelDriver = (function(window, undefined){
 
 })(window);
 
-var resolveStrToObj = function ( objOrStr, searchObj ) {
-  if ( ! objOrStr ) return;
-
-  // If `objOrStr` is a String search for it in the `searchObj`
-  if ( typeof objOrStr === "string") {
-    return searchObj[objOrStr];
-  }
-
-  return objOrStr;
-},
-
-fillOption = function ( newOptions, userOption, defaultOptions, searchObj, optionName ) {
-  if ( ! userOption ) {
-    // No userOptions, use defaults
-    newOptions[optionName] = defaultOptions[optionName];
-  } else {
-    // User Options are there.
-    // Search for the `optionName` and resolve it.
-    newOptions[optionName] = resolveStrToObj ( userOption[optionName], searchObj ) || defaultOptions[optionName];
-  }
-},
-
-callObjOrArray = function ( objOrArr, methodName, param ){
-  if ( Array.isArray ( objOrArr ) ) {
-    objOrArr.forEach(function ( obj ){
-      obj[methodName] ( param );
-    });
-  } else { 
-    objOrArr[methodName] ( param );
-  }
-
-};
-
 // Defining some defaults
 var defaultOptions = {
-  driver      : MouseDriver,
+  driver      : [ TouchDriver, MouseDriver ],
   resolver    : HorizontalResolverProvider ( ),
   adapter     : BasicNodeAdapter
 };
@@ -240,7 +292,7 @@ var Scrubbing = function ( node, userOptions ) {
   this.node.dataset.scrubOrientation = this.options.resolver.name;
 
   // Initialise Adapter
-  callObjOrArray ( this.options.adapter, "init", this);
+  this.options.adapter.init ( this );
   // Initialise Driver
   callObjOrArray ( this.options.driver, "init", this);
 };
@@ -254,7 +306,9 @@ Scrubbing.prototype = {
 
   Scrubbing.driver   = {
                         Mouse     : MouseDriver,
-                        MouseWheel: MouseWheelDriver
+                        MouseWheel: MouseWheelDriver,
+
+                        Touch     : TouchDriver
                        };
 
   Scrubbing.adapter  = { BasicNode : BasicNodeAdapter };
