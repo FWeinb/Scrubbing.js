@@ -49,7 +49,6 @@ module.exports = function(grunt) {
 
 
 
-  grunt.registerTask('build', ['concat', 'uglify']);
-  grunt.registerTask('doc',   ['build',  'docco']);
+  grunt.registerTask('build', ['concat', 'uglify', 'docco']);
 
 };
