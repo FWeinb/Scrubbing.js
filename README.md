@@ -10,7 +10,7 @@ Basic API:
     new Scrubbing ( node, {
       resolver : /* a resolver */,
       driver   : /* a driver or array of Drivers */,
-      adapter  : /* an adapter or array of adapter */
+      adapter  : /* an adapter */
     });
 
 Default usage:
