@@ -1,0 +1,17 @@
+{
+  "name": "scrubber.js",
+  "description": "Highly customizable mouse scrubbing implementation for numbers and custom data.",
+  "main" : "dist/Scrubbing.js",
+  "ignore": [
+      "**/.*",
+      "src",
+      "Gruntfile.js",
+      "package.json"
+   ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/FWeinb/Scrubbing.js.git"
+  },
+  "authors" : "Fabrice Weinberg <Fabrice@weinberg.me>",
+  "version": "0.0.3"
+}
